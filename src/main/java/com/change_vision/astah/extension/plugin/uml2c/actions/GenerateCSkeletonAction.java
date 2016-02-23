@@ -4,9 +4,13 @@ import java.io.File;
 
 import javax.swing.JOptionPane;
 
+import org.apache.velocity.exception.ResourceNotFoundException;
+
+import com.change_vision.astah.extension.plugin.uml2c.Messages;
 import com.change_vision.astah.extension.plugin.uml2c.cmodule.AbstractCModule;
 import com.change_vision.astah.extension.plugin.uml2c.cmodule.CModuleFactory;
 import com.change_vision.astah.extension.plugin.uml2c.codegenerator.CSkeletonGenerator;
+import com.change_vision.astah.extension.plugin.uml2c.codegenerator.CodeGenerator;
 import com.change_vision.jude.api.inf.AstahAPI;
 import com.change_vision.jude.api.inf.exception.ProjectNotFoundException;
 import com.change_vision.jude.api.inf.model.IClass;
@@ -56,11 +60,15 @@ public class GenerateCSkeletonAction implements IPluginActionDelegate {
             String message = "Please open a project";
             JOptionPane.showMessageDialog(window.getParent(), message, "Warning",
                     JOptionPane.WARNING_MESSAGE);
+        } catch (ResourceNotFoundException e) {
+            JOptionPane.showMessageDialog(window.getParent(), 
+                    Messages.getMessage("message.not_found_template", CodeGenerator.getAstahConfigPath(), e.getLocalizedMessage()),
+                    Messages.getMessage("title.not_found_template"),
+                    JOptionPane.WARNING_MESSAGE);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(window.getParent(), "Exception Occured\n\n" + e.getLocalizedMessage() + "\n" + e.getStackTrace(), "Alert",
                     JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();  //TODO
-            throw new UnExpectedException();
         }
 
         System.out.println("End generating c-code skeleton.");

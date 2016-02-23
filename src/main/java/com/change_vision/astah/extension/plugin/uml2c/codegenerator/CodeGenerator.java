@@ -10,11 +10,12 @@ import java.io.PrintWriter;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
+import org.apache.velocity.exception.ResourceNotFoundException;
 
 import com.change_vision.astah.extension.plugin.uml2c.cmodule.AbstractCModule;
 import com.change_vision.jude.api.inf.AstahAPI;
 
-class CodeGenerator {
+public class CodeGenerator {
     private static final String TEMPLATE_ENCODING = "UTF-8"; //"UTF-8", "Windows-31J"
     private static final String OUTPUT_ENCODING = "UTF-8"; //"UTF-8", "Windows-31J"
 
@@ -31,7 +32,12 @@ class CodeGenerator {
         VelocityContext context = new VelocityContext();
         context.put("cModule", cModule);
 
-        Template template = Velocity.getTemplate(templatePath, TEMPLATE_ENCODING);
+        Template template = null;
+        try {
+            template = Velocity.getTemplate(templatePath, TEMPLATE_ENCODING);
+        } catch (ResourceNotFoundException e) {
+            throw e;
+        }
 
         File file = new File(codePath);
         PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), OUTPUT_ENCODING)));
@@ -47,7 +53,7 @@ class CodeGenerator {
         return getAstahConfigPath() + ",.";
     }
     
-    private String getAstahConfigPath() {
+    public static String getAstahConfigPath() {
         String edition;
         try {
             edition = AstahAPI.getAstahAPI().getProjectAccessor().getAstahEdition();
