@@ -1,0 +1,26 @@
+#ifndef _MOCK_${cModule.name.toUpperCase()}_H_
+\#define _MOCK_${cModule.name.toUpperCase()}_H_
+
+\#include <gmock/gmock.h>
+\#include "${cModule.name}.h"
+
+
+class ${cModule.name}Base {
+public:
+	virtual ~${cModule.name}Base() {}
+#foreach($p in $cModule.prototypeDeclarations)
+	virtual $p = 0;
+#end
+};
+
+class Mock${cModule.name} : public ${cModule.name}Base {
+public:
+#foreach($m in $cModule.methodDeclarationsForMock)
+	$m;
+#end
+};
+
+
+extern ${cModule.name}Base *g_p${cModule.name};
+
+#endif	/* _MOCK_${cModule.name.toUpperCase()}_H_ */

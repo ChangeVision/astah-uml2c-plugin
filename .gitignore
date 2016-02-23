@@ -1,0 +1,8 @@
+tags
+cscope.*
+*.un~
+*.swp
+*/target/*
+.settings/
+.DS_Store
+/target/

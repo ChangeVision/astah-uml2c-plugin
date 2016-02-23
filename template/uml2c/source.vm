@@ -1,0 +1,15 @@
+\#include "${cModule.name}.h"
+
+
+#foreach($m in $cModule.staticMemberDefinitions)
+static $m;
+#end
+
+
+#foreach($p in $cModule.prototypeDeclarationsForC)
+$p
+{
+	/* TODO */
+}
+
+#end

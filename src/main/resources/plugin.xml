@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin>
+   <extension point="com.change_vision.astah.ui.actionSets">
+      <actionSet
+            label="%action_set_label"
+            visible="true"
+            id="com.change_vision.astah.extension.plugin.uml2c.actions.actionSet">
+         <menu
+               id="uml2c"
+               label="%menu_group"
+               path="tool/uml2c">
+         </menu>
+         <action
+               label="%menu_label_gmock"
+               icon="icons/sample.gif"
+               class="com.change_vision.astah.extension.plugin.uml2c.actions.GenerateGoogleMockAction"
+               tooltip="%menu_tooltip"
+               menubarPath="tool/uml2c/"
+               id="com.change_vision.astah.extension.plugin.uml2c.actions.GenerateGoogleMockAction">
+         </action>
+         <action
+               label="%menu_label_c_skeleton"
+               icon="icons/sample.gif"
+               class="com.change_vision.astah.extension.plugin.uml2c.actions.GenerateCSkeletonAction"
+               tooltip="%menu_tooltip"
+               menubarPath="tool/uml2c/"
+               id="com.change_vision.astah.extension.plugin.uml2c.actions.GenerateCSkeletonAction">
+         </action>
+     </actionSet>
+   </extension>
+</plugin>
