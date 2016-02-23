@@ -46,6 +46,8 @@ public abstract class GenerateCodeAction implements IPluginActionDelegate {
             IClass iClass = (IClass) iElements[0];
 
             AbstractCModule cModule = CModuleFactory.getCModule(iClass);
+            System.out.printf("Module is %s.\n", cModule.getClass().getSimpleName());
+
             String outputDirPath = new File(projectAccessor.getProjectPath()).getParent();
 
             generateCode(cModule, outputDirPath);
