@@ -1,0 +1,35 @@
+#ifndef _${cModule.name.toUpperCase()}_PRIVATE_H_
+\#define _${cModule.name.toUpperCase()}_PRIVATE_H_
+#ifdef __cplusplus
+extern "C" {	/* } */
+#endif
+
+#if(${cModule.class.simpleName} == "PerTypeDynamicInterfaceCModule")
+
+typedef struct ${cModule.name}InterfaceStruct *${cModule.name}Interface;
+
+#end
+
+struct ${cModule.name}Struct {
+#if(${cModule.class.simpleName} == "PerTypeDynamicInterfaceCModule")
+	${cModule.name}Interface vtable;
+#end
+#foreach($m in $cModule.memberDefinitions)
+	$m;
+#end
+};
+
+#if(${cModule.class.simpleName} == "PerTypeDynamicInterfaceCModule")
+
+typedef struct ${cModule.name}InterfaceStruct {
+#foreach($p in $cModule.prototypeDeclarationsForCInterface)
+	$p;
+#end
+};
+
+#end
+
+#ifdef __cplusplus
+}
+#endif
+#endif	/* _${cModule.name.toUpperCase()}_PRIVATE_H_ */

@@ -1,0 +1,10 @@
+\#include "Mock_${cModule.name}.h"
+
+
+${cModule.name}Base *g_p${cModule.name};
+
+
+#foreach($f in $cModule.callMockFunctionDefinitions)
+$f
+
+#end

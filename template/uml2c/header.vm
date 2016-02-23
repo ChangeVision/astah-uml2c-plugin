@@ -1,0 +1,32 @@
+#ifndef _${cModule.name.toUpperCase()}_H_
+\#define _${cModule.name.toUpperCase()}_H_
+#ifdef __cplusplus
+extern "C" {	/* } */
+#endif
+
+#if(${cModule.class.simpleName} != "SingleInstanceCModule")
+typedef struct ${cModule.name}Struct *${cModule.name};
+#end
+#foreach($e in $cModule.enumerations)
+typedef enum tag${e.name} {
+#foreach($r in $e.enumerators)
+	$r.name#if(!${r.initialValue.isEmpty()}) = ${r.initialValue}#end#if($velocityHasNext),#end
+
+#end
+} ${e.name};
+
+#end
+
+
+#foreach($p in $cModule.prototypeDeclarationsForC)
+$p;
+#end
+
+#if(${cModule.class.simpleName} != "SingleInstanceCModule")
+\#include "${cModule.name}Private.h"
+#end
+
+#ifdef __cplusplus
+}
+#endif
+#endif	/* _${cModule.name.toUpperCase()}_H_ */
