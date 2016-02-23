@@ -15,8 +15,8 @@ import com.change_vision.astah.extension.plugin.uml2c.cmodule.AbstractCModule;
 import com.change_vision.jude.api.inf.AstahAPI;
 
 class CodeGenerator {
-    private static final String TEMPLATE_ENCODING = "Windows-31J"; //"UTF-8", "Windows-31J"
-    private static final String OUTPUT_ENCODING = "Windows-31J"; //"UTF-8", "Windows-31J"
+    private static final String TEMPLATE_ENCODING = "UTF-8"; //"UTF-8", "Windows-31J"
+    private static final String OUTPUT_ENCODING = "UTF-8"; //"UTF-8", "Windows-31J"
 
     public CodeGenerator(AbstractCModule cModule) {
         this.cModule = cModule;
