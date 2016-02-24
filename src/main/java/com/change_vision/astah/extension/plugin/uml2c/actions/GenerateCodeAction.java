@@ -2,6 +2,8 @@ package com.change_vision.astah.extension.plugin.uml2c.actions;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -36,10 +38,8 @@ public abstract class GenerateCodeAction implements IPluginActionDelegate {
             @SuppressWarnings("unused")
             IModel iCurrentProject = projectAccessor.getProject();
 
-            IElement[] iElements = getSelectedElements(api);
-
-            // Check the selected elements
-            if ((iElements.length != 1) || !(iElements[0] instanceof IClass)) {
+            List<IClass> targetClasses = getTargetClasses(api);
+            if (targetClasses.isEmpty()) {
                 JOptionPane.showMessageDialog(window.getParent(),
                         Messages.getMessage("message.select_class"), 
                         Messages.getMessage("title.select_class"),
@@ -47,24 +47,23 @@ public abstract class GenerateCodeAction implements IPluginActionDelegate {
                 logger.warn("No target class was selected");
                 return null;
             }
-            IClass iClass = (IClass) iElements[0];
 
-            AbstractCModule cModule = CModuleFactory.getCModule(iClass);
-            logger.info("Module = {}", cModule.getClass().getSimpleName());
             logger.info("Project Path = {}", projectAccessor.getProjectPath());
-
             String outputDirPath = getOutputDirPath(window, projectAccessor);
             logger.info("Output Path = {}", outputDirPath);
             if (outputDirPath == null) return null; //canceled
-
-            generateCode(cModule, outputDirPath);
+            
+            for (IClass iClass: targetClasses) {
+                AbstractCModule cModule = CModuleFactory.getCModule(iClass);
+                logger.info("Module = {}", cModule.getClass().getSimpleName());
+                generateCode(cModule, outputDirPath);
+            }
 
             JOptionPane.showMessageDialog(window.getParent(), 
                     Messages.getMessage("message.finish_generating"), 
                     Messages.getMessage("title.finish_generating"),
                     JOptionPane.INFORMATION_MESSAGE);
             logger.info("Finished.");
-
         } catch (ProjectNotFoundException e) {
             logger.warn("Project Not Found.");
             JOptionPane.showMessageDialog(window.getParent(), 
@@ -88,6 +87,17 @@ public abstract class GenerateCodeAction implements IPluginActionDelegate {
         }
 
         return null;
+    }
+
+    private List<IClass> getTargetClasses(AstahAPI api) throws InvalidUsingException {
+        IElement[] iElements = getSelectedElements(api);
+        List<IClass> targetClasses = new ArrayList<IClass>();
+        for (IElement element : iElements) {
+            if (element instanceof IClass) {
+                targetClasses.add((IClass)element);
+            }
+        }
+        return targetClasses;
     }
 
     private String getOutputDirPath(IWindow window, ProjectAccessor projectAccessor)
