@@ -3,6 +3,7 @@ package com.change_vision.astah.extension.plugin.uml2c.actions;
 import java.io.File;
 import java.io.IOException;
 
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import org.apache.velocity.exception.ResourceNotFoundException;
@@ -47,7 +48,8 @@ public abstract class GenerateCodeAction implements IPluginActionDelegate {
             System.out.printf("Module is %s.\n", cModule.getClass().getSimpleName());
             System.out.printf("path is %s.\n", projectAccessor.getProjectPath());
 
-            String outputDirPath = new File(projectAccessor.getProjectPath()).getParent();
+            String outputDirPath = getOutputDirPath(window, projectAccessor);
+            if (outputDirPath == null) return null; //canceled
 
             generateCode(cModule, outputDirPath);
 
@@ -74,6 +76,23 @@ public abstract class GenerateCodeAction implements IPluginActionDelegate {
         }
 
         return null;
+    }
+
+    private String getOutputDirPath(IWindow window, ProjectAccessor projectAccessor)
+            throws ProjectNotFoundException {
+        String outputDirPath = new File(projectAccessor.getProjectPath()).getParent();
+        if (outputDirPath == null) {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            fileChooser.setDialogTitle(Messages.getMessage("title.choose_output_dir"));
+            int selected = fileChooser.showSaveDialog(window.getParent());
+            if (selected != JFileChooser.CANCEL_OPTION) {
+                outputDirPath = fileChooser.getSelectedFile().getAbsolutePath();
+            } else {
+                return null; //canceled
+            }
+        }
+        return outputDirPath;
     }
 
     private IElement[] getSelectedElements(AstahAPI api) throws InvalidUsingException {
