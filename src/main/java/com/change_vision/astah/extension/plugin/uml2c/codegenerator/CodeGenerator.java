@@ -11,6 +11,8 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.exception.ResourceNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.change_vision.astah.extension.plugin.uml2c.cmodule.AbstractCModule;
 import com.change_vision.jude.api.inf.AstahAPI;
@@ -18,6 +20,9 @@ import com.change_vision.jude.api.inf.AstahAPI;
 public class CodeGenerator {
     private static final String TEMPLATE_ENCODING = "UTF-8"; //"UTF-8", "Windows-31J"
     private static final String OUTPUT_ENCODING = "UTF-8"; //"UTF-8", "Windows-31J"
+    private static final String templateDirPath = "plugins/uml2c/";
+    private static Logger logger = LoggerFactory.getLogger(CodeGenerator.class);
+    private AbstractCModule cModule;
 
     public CodeGenerator(AbstractCModule cModule) {
         this.cModule = cModule;
@@ -38,8 +43,10 @@ public class CodeGenerator {
         } catch (ResourceNotFoundException e) {
             throw e;
         }
-
+        
         File file = new File(codePath);
+        logger.info("Generating {} ({})", file.getName(), templatePath);
+
         PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), OUTPUT_ENCODING)));
         template.merge(context, pw);
         pw.close();
@@ -68,7 +75,4 @@ public class CodeGenerator {
     public String getTemplateDirPath() {
         return templateDirPath;
     }
-
-    private AbstractCModule cModule;
-    private static final String templateDirPath = "plugins/uml2c/";
 }

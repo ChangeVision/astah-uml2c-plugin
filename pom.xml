@@ -5,7 +5,7 @@
 		<bundle.symbolicName>com.change_vision.astah.extension.plugin.uml2c</bundle.symbolicName>
 		<bundle.namespace>com.change_vision.astah.extension.plugin.uml2c</bundle.namespace>
 		<plugin.install>true</plugin.install>
-		<astah.version>6.7</astah.version>
+		<astah.version>7.0</astah.version>
 		<astah.edition>all</astah.edition>
 	</properties>
 	<modelVersion>4.0.0</modelVersion>
@@ -272,6 +272,16 @@
 			<version>4.2.0</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>1.1.5</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.1.5</version>
+        </dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

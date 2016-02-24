@@ -1,0 +1,41 @@
+<configuration>
+  <define name="astah.edition" class="com.change_vision.astah.extension.plugin.uml2c.AstahEditionPropertyDefiner"/>
+  
+  <appender name="STDOUT"
+   class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%-5p %c{0} %X - %m%n</pattern>
+    </encoder>
+  </appender>
+
+<!-- 
+  <turboFilter class="ch.qos.logback.classic.turbo.MarkerFilter">
+    <Marker>load</Marker>
+    <OnMatch>DENY</OnMatch>
+  </turboFilter>
+ -->
+
+  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <File>${user.home}/.astah/${astah.edition}/uml2c.log</File>
+    <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+      <FileNamePattern>${user.home}/.astah/${astah.edition}/uml2c.%i.log.zip</FileNamePattern>
+      <MinIndex>1</MinIndex>
+      <MaxIndex>3</MaxIndex>
+    </rollingPolicy>
+
+    <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+      <MaxFileSize>1MB</MaxFileSize>
+    </triggeringPolicy>
+    <encoder>
+      <pattern>%d %-5p %c{25} %X - %m%n</pattern>
+    </encoder>
+  </appender>
+  <!-- turn OFF all logging (children can override) -->
+  <logger name="com.change_vision.astah.extension.plugin.uml2c" level="${root-log-level:-INFO}"/>
+
+  <root level="${root-log-level:-INFO}">
+    <appender-ref ref="FILE" />
+    <appender-ref ref="STDOUT" />
+  </root>
+
+</configuration>
