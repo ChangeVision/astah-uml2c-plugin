@@ -7,6 +7,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import org.apache.velocity.exception.ResourceNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.change_vision.astah.extension.plugin.uml2c.Messages;
 import com.change_vision.astah.extension.plugin.uml2c.cmodule.AbstractCModule;
@@ -25,6 +27,8 @@ import com.change_vision.jude.api.inf.view.IDiagramViewManager;
 import com.change_vision.jude.api.inf.view.IViewManager;
 
 public abstract class GenerateCodeAction implements IPluginActionDelegate {
+    private static Logger logger = LoggerFactory.getLogger(CodeGenerator.class);
+
     public Object run(IWindow window) throws UnExpectedException {
         try {
             AstahAPI api = AstahAPI.getAstahAPI();
@@ -40,15 +44,17 @@ public abstract class GenerateCodeAction implements IPluginActionDelegate {
                         Messages.getMessage("message.select_class"), 
                         Messages.getMessage("title.select_class"),
                         JOptionPane.WARNING_MESSAGE);
+                logger.warn("No target class was selected");
                 return null;
             }
             IClass iClass = (IClass) iElements[0];
 
             AbstractCModule cModule = CModuleFactory.getCModule(iClass);
-            System.out.printf("Module is %s.\n", cModule.getClass().getSimpleName());
-            System.out.printf("path is %s.\n", projectAccessor.getProjectPath());
+            logger.info("Module = {}", cModule.getClass().getSimpleName());
+            logger.info("Project Path = {}", projectAccessor.getProjectPath());
 
             String outputDirPath = getOutputDirPath(window, projectAccessor);
+            logger.info("Output Path = {}", outputDirPath);
             if (outputDirPath == null) return null; //canceled
 
             generateCode(cModule, outputDirPath);
@@ -57,22 +63,28 @@ public abstract class GenerateCodeAction implements IPluginActionDelegate {
                     Messages.getMessage("message.finish_generating"), 
                     Messages.getMessage("title.finish_generating"),
                     JOptionPane.INFORMATION_MESSAGE);
+            logger.info("Finished.");
 
         } catch (ProjectNotFoundException e) {
             JOptionPane.showMessageDialog(window.getParent(), 
                     Messages.getMessage("message.project_not_found"), 
                     Messages.getMessage("title.project_not_found"),
                     JOptionPane.WARNING_MESSAGE);
+            logger.warn("Project Not Found.");
         } catch (ResourceNotFoundException e) {
             JOptionPane.showMessageDialog(window.getParent(), 
                     Messages.getMessage("message.not_found_template", CodeGenerator.getAstahConfigPath(), e.getLocalizedMessage()),
                     Messages.getMessage("title.not_found_template"),
                     JOptionPane.WARNING_MESSAGE);
+            logger.warn("Template Not Found.");
+            logger.warn(" - Template Search Path = {}", CodeGenerator.getAstahConfigPath());
+            logger.warn(" - Exception = {}", e.getLocalizedMessage());
         } catch (Throwable e) {
             JOptionPane.showMessageDialog(window.getParent(),
-                    Messages.getMessage("message.unexpected_exception", e.getLocalizedMessage(), e.getStackTrace()),
+                    Messages.getMessage("message.unexpected_exception", e.getLocalizedMessage()),
                     Messages.getMessage("title.unexpected_exception"),
                     JOptionPane.ERROR_MESSAGE);
+            logger.error("Unexpected Exception", e);
         }
 
         return null;
