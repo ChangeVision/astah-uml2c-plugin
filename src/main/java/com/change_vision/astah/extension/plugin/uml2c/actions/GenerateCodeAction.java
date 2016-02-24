@@ -51,6 +51,11 @@ public abstract class GenerateCodeAction implements IPluginActionDelegate {
 
             generateCode(cModule, outputDirPath);
 
+            JOptionPane.showMessageDialog(window.getParent(), 
+                    Messages.getMessage("message.finish_generating"), 
+                    Messages.getMessage("title.finish_generating"),
+                    JOptionPane.INFORMATION_MESSAGE);
+
         } catch (ProjectNotFoundException e) {
             JOptionPane.showMessageDialog(window.getParent(), 
                     Messages.getMessage("message.project_not_found"), 
