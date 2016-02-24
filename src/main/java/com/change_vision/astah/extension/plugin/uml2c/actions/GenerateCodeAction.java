@@ -66,25 +66,25 @@ public abstract class GenerateCodeAction implements IPluginActionDelegate {
             logger.info("Finished.");
 
         } catch (ProjectNotFoundException e) {
+            logger.warn("Project Not Found.");
             JOptionPane.showMessageDialog(window.getParent(), 
                     Messages.getMessage("message.project_not_found"), 
                     Messages.getMessage("title.project_not_found"),
                     JOptionPane.WARNING_MESSAGE);
-            logger.warn("Project Not Found.");
         } catch (ResourceNotFoundException e) {
+            logger.warn("Template Not Found.");
+            logger.warn(" - Template Search Path = {}", CodeGenerator.getAstahConfigPath());
+            logger.warn(" - Exception = {}", e.getLocalizedMessage());
             JOptionPane.showMessageDialog(window.getParent(), 
                     Messages.getMessage("message.not_found_template", CodeGenerator.getAstahConfigPath(), e.getLocalizedMessage()),
                     Messages.getMessage("title.not_found_template"),
                     JOptionPane.WARNING_MESSAGE);
-            logger.warn("Template Not Found.");
-            logger.warn(" - Template Search Path = {}", CodeGenerator.getAstahConfigPath());
-            logger.warn(" - Exception = {}", e.getLocalizedMessage());
         } catch (Throwable e) {
+            logger.error("Unexpected Exception", e);
             JOptionPane.showMessageDialog(window.getParent(),
                     Messages.getMessage("message.unexpected_exception", e.getLocalizedMessage()),
                     Messages.getMessage("title.unexpected_exception"),
                     JOptionPane.ERROR_MESSAGE);
-            logger.error("Unexpected Exception", e);
         }
 
         return null;

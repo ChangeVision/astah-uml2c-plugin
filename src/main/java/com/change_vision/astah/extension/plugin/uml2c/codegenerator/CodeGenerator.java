@@ -44,9 +44,9 @@ public class CodeGenerator {
             throw e;
         }
         
-        logger.info("Generating {} ({})", codePath, templatePath);
-
         File file = new File(codePath);
+        logger.info("Generating {} ({})", file.getName(), templatePath);
+
         PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), OUTPUT_ENCODING)));
         template.merge(context, pw);
         pw.close();
