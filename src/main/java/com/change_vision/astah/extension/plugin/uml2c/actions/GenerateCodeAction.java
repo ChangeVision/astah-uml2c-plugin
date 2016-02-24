@@ -12,6 +12,7 @@ import com.change_vision.astah.extension.plugin.uml2c.cmodule.AbstractCModule;
 import com.change_vision.astah.extension.plugin.uml2c.cmodule.CModuleFactory;
 import com.change_vision.astah.extension.plugin.uml2c.codegenerator.CodeGenerator;
 import com.change_vision.jude.api.inf.AstahAPI;
+import com.change_vision.jude.api.inf.exception.InvalidUsingException;
 import com.change_vision.jude.api.inf.exception.ProjectNotFoundException;
 import com.change_vision.jude.api.inf.model.IClass;
 import com.change_vision.jude.api.inf.model.IElement;
@@ -30,12 +31,9 @@ public abstract class GenerateCodeAction implements IPluginActionDelegate {
             @SuppressWarnings("unused")
             IModel iCurrentProject = projectAccessor.getProject();
 
-            // 選択されたモデル要素を取得
-            IViewManager iViewManager = api.getViewManager();
-            IDiagramViewManager iDiagramViewManager = iViewManager.getDiagramViewManager();
-            IElement iElements[] = iDiagramViewManager.getSelectedElements();
+            IElement[] iElements = getSelectedElements(api);
 
-            // 選択されたモデル要素が1つ、クラスであることをチェック
+            // Check the selected elements
             if ((iElements.length != 1) || !(iElements[0] instanceof IClass)) {
                 JOptionPane.showMessageDialog(window.getParent(),
                         Messages.getMessage("message.select_class"), 
@@ -47,6 +45,7 @@ public abstract class GenerateCodeAction implements IPluginActionDelegate {
 
             AbstractCModule cModule = CModuleFactory.getCModule(iClass);
             System.out.printf("Module is %s.\n", cModule.getClass().getSimpleName());
+            System.out.printf("path is %s.\n", projectAccessor.getProjectPath());
 
             String outputDirPath = new File(projectAccessor.getProjectPath()).getParent();
 
@@ -62,7 +61,7 @@ public abstract class GenerateCodeAction implements IPluginActionDelegate {
                     Messages.getMessage("message.not_found_template", CodeGenerator.getAstahConfigPath(), e.getLocalizedMessage()),
                     Messages.getMessage("title.not_found_template"),
                     JOptionPane.WARNING_MESSAGE);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             JOptionPane.showMessageDialog(window.getParent(),
                     Messages.getMessage("message.unexpected_exception", e.getLocalizedMessage(), e.getStackTrace()),
                     Messages.getMessage("title.unexpected_exception"),
@@ -70,6 +69,12 @@ public abstract class GenerateCodeAction implements IPluginActionDelegate {
         }
 
         return null;
+    }
+
+    private IElement[] getSelectedElements(AstahAPI api) throws InvalidUsingException {
+        IViewManager iViewManager = api.getViewManager();
+        IDiagramViewManager iDiagramViewManager = iViewManager.getDiagramViewManager();
+        return iDiagramViewManager.getSelectedElements();
     }
 
     protected abstract void generateCode(AbstractCModule cModule, String outputDirPath) throws IOException;
