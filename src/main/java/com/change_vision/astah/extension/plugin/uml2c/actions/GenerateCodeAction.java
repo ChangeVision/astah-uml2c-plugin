@@ -16,6 +16,7 @@ import com.change_vision.astah.extension.plugin.uml2c.Messages;
 import com.change_vision.astah.extension.plugin.uml2c.cmodule.AbstractCModule;
 import com.change_vision.astah.extension.plugin.uml2c.cmodule.CModuleFactory;
 import com.change_vision.astah.extension.plugin.uml2c.codegenerator.CodeGenerator;
+import com.change_vision.astah.extension.plugin.uml2c.astahutil.AstahUtil;
 import com.change_vision.jude.api.inf.AstahAPI;
 import com.change_vision.jude.api.inf.exception.InvalidUsingException;
 import com.change_vision.jude.api.inf.exception.ProjectNotFoundException;
@@ -27,6 +28,7 @@ import com.change_vision.jude.api.inf.ui.IPluginActionDelegate;
 import com.change_vision.jude.api.inf.ui.IWindow;
 import com.change_vision.jude.api.inf.view.IDiagramViewManager;
 import com.change_vision.jude.api.inf.view.IViewManager;
+
 
 public abstract class GenerateCodeAction implements IPluginActionDelegate {
     private static Logger logger = LoggerFactory.getLogger(CodeGenerator.class);
@@ -41,7 +43,7 @@ public abstract class GenerateCodeAction implements IPluginActionDelegate {
             List<IClass> targetClasses = getTargetClasses(api);
             if (targetClasses.isEmpty()) {
                 JOptionPane.showMessageDialog(window.getParent(),
-                        Messages.getMessage("message.select_class"), 
+                        Messages.getMessage("message.select_class"),
                         Messages.getMessage("title.select_class"),
                         JOptionPane.WARNING_MESSAGE);
                 logger.warn("No target class was selected");
@@ -52,34 +54,34 @@ public abstract class GenerateCodeAction implements IPluginActionDelegate {
             String outputDirPath = getOutputDirPath(window, projectAccessor);
             logger.info("Output Path = {}", outputDirPath);
             if (outputDirPath == null) return null; //canceled
-            
+
             if (!ensureWritableOutputFolder(outputDirPath, window)) {
                 return null;
             }
-            
+
             for (IClass iClass: targetClasses) {
                 AbstractCModule cModule = CModuleFactory.getCModule(iClass);
                 logger.info("Module = {}", cModule.getClass().getSimpleName());
                 generateCode(cModule, outputDirPath);
             }
 
-            JOptionPane.showMessageDialog(window.getParent(), 
-                    Messages.getMessage("message.finish_generating"), 
+            JOptionPane.showMessageDialog(window.getParent(),
+                    Messages.getMessage("message.finish_generating"),
                     Messages.getMessage("title.finish_generating"),
                     JOptionPane.INFORMATION_MESSAGE);
             logger.info("Finished.");
         } catch (ProjectNotFoundException e) {
             logger.warn("Project Not Found.");
-            JOptionPane.showMessageDialog(window.getParent(), 
-                    Messages.getMessage("message.project_not_found"), 
+            JOptionPane.showMessageDialog(window.getParent(),
+                    Messages.getMessage("message.project_not_found"),
                     Messages.getMessage("title.project_not_found"),
                     JOptionPane.WARNING_MESSAGE);
         } catch (ResourceNotFoundException e) {
             logger.warn("Template Not Found.");
-            logger.warn(" - Template Search Path = {}", CodeGenerator.getAstahConfigPath());
+            logger.warn(" - Template Search Path = {}", AstahUtil.getFullPathOfConfigDir());
             logger.warn(" - Exception = {}", e.getLocalizedMessage());
-            JOptionPane.showMessageDialog(window.getParent(), 
-                    Messages.getMessage("message.not_found_template", CodeGenerator.getAstahConfigPath(), e.getLocalizedMessage()),
+            JOptionPane.showMessageDialog(window.getParent(),
+                    Messages.getMessage("message.not_found_template", AstahUtil.getFullPathOfConfigDir(), e.getLocalizedMessage()),
                     Messages.getMessage("title.not_found_template"),
                     JOptionPane.WARNING_MESSAGE);
         } catch (Throwable e) {
@@ -92,7 +94,7 @@ public abstract class GenerateCodeAction implements IPluginActionDelegate {
 
         return null;
     }
-    
+
     protected abstract void generateCode(AbstractCModule cModule, String outputDirPath) throws IOException;
 
     private boolean ensureWritableOutputFolder(String outputDirPath, IWindow window) {
@@ -102,7 +104,7 @@ public abstract class GenerateCodeAction implements IPluginActionDelegate {
             if (!wasSucceeded) {
                 logger.warn("Failed to create a folder to output. path = {}", outputDir.getAbsolutePath());
                 JOptionPane.showMessageDialog(window.getParent(),
-                        Messages.getMessage("message.failed_mkdirs", outputDir.getAbsolutePath()), 
+                        Messages.getMessage("message.failed_mkdirs", outputDir.getAbsolutePath()),
                         Messages.getMessage("title.failed_mkdirs"),
                         JOptionPane.WARNING_MESSAGE);
                 return false;
@@ -112,7 +114,7 @@ public abstract class GenerateCodeAction implements IPluginActionDelegate {
         if (!outputDir.canWrite()) {
             logger.warn("The output folder is not writable. path = {}", outputDir.getAbsolutePath());
             JOptionPane.showMessageDialog(window.getParent(),
-                    Messages.getMessage("message.not_writable_output_folder", outputDir.getAbsolutePath()), 
+                    Messages.getMessage("message.not_writable_output_folder", outputDir.getAbsolutePath()),
                     Messages.getMessage("title.not_writable_output_folder"),
                     JOptionPane.WARNING_MESSAGE);
             return false;
@@ -136,8 +138,8 @@ public abstract class GenerateCodeAction implements IPluginActionDelegate {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         fileChooser.setDialogTitle(Messages.getMessage("title.choose_output_dir"));
-        
-        File projectDir = new File(projectAccessor.getProjectPath()).getParentFile();        
+
+        File projectDir = new File(projectAccessor.getProjectPath()).getParentFile();
         if (projectDir != null && projectDir.exists() && projectDir.canWrite()) {
             fileChooser.setSelectedFile(projectDir);
         }

@@ -14,13 +14,14 @@ import org.apache.velocity.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.change_vision.astah.extension.plugin.uml2c.astahutil.AstahUtil;
 import com.change_vision.astah.extension.plugin.uml2c.cmodule.AbstractCModule;
 import com.change_vision.jude.api.inf.AstahAPI;
 
 public class CodeGenerator {
     private static final String TEMPLATE_ENCODING = "UTF-8"; //"UTF-8", "Windows-31J"
     private static final String OUTPUT_ENCODING = "UTF-8"; //"UTF-8", "Windows-31J"
-    private static final String templateDirPath = "plugins/uml2c/";
+    private static final String TEMPLATE_DIR_PATH = "plugins/uml2c/";
     private static Logger logger = LoggerFactory.getLogger(CodeGenerator.class);
     private AbstractCModule cModule;
 
@@ -43,7 +44,7 @@ public class CodeGenerator {
         } catch (ResourceNotFoundException e) {
             throw e;
         }
-        
+
         File file = new File(codePath);
         logger.info("Generating {} ({})", file.getName(), templatePath);
 
@@ -57,22 +58,10 @@ public class CodeGenerator {
     }
 
     public String getTemplateSearchDirPath() {
-        return getAstahConfigPath() + ",.";
-    }
-    
-    public static String getAstahConfigPath() {
-        String edition;
-        try {
-            edition = AstahAPI.getAstahAPI().getProjectAccessor().getAstahEdition();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            return "";
-        }
-        String userHomeDir = System.getProperty("user.home");
-        return userHomeDir + "/.astah/" + edition;
+        return AstahUtil.getFullPathOfConfigDir() + ",.";
     }
 
     public String getTemplateDirPath() {
-        return templateDirPath;
+        return TEMPLATE_DIR_PATH;
     }
 }
