@@ -53,6 +53,10 @@ public abstract class GenerateCodeAction implements IPluginActionDelegate {
             logger.info("Output Path = {}", outputDirPath);
             if (outputDirPath == null) return null; //canceled
             
+            if (!ensureWritableOutputFolder(outputDirPath, window)) {
+                return null;
+            }
+            
             for (IClass iClass: targetClasses) {
                 AbstractCModule cModule = CModuleFactory.getCModule(iClass);
                 logger.info("Module = {}", cModule.getClass().getSimpleName());
@@ -88,6 +92,33 @@ public abstract class GenerateCodeAction implements IPluginActionDelegate {
 
         return null;
     }
+    
+    protected abstract void generateCode(AbstractCModule cModule, String outputDirPath) throws IOException;
+
+    private boolean ensureWritableOutputFolder(String outputDirPath, IWindow window) {
+        File outputDir = new File(outputDirPath);
+        if (!outputDir.exists()) {
+            boolean wasSucceeded = outputDir.mkdirs();
+            if (!wasSucceeded) {
+                logger.warn("Failed to create a folder to output. path = {}", outputDir.getAbsolutePath());
+                JOptionPane.showMessageDialog(window.getParent(),
+                        Messages.getMessage("message.failed_mkdirs", outputDir.getAbsolutePath()), 
+                        Messages.getMessage("title.failed_mkdirs"),
+                        JOptionPane.WARNING_MESSAGE);
+                return false;
+            }
+            logger.info("Created a folder to output. path = {}", outputDir.getAbsolutePath());
+        }
+        if (!outputDir.canWrite()) {
+            logger.warn("The output folder is not writable. path = {}", outputDir.getAbsolutePath());
+            JOptionPane.showMessageDialog(window.getParent(),
+                    Messages.getMessage("message.not_writable_output_folder", outputDir.getAbsolutePath()), 
+                    Messages.getMessage("title.not_writable_output_folder"),
+                    JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+        return true;
+    }
 
     private List<IClass> getTargetClasses(AstahAPI api) throws InvalidUsingException {
         IElement[] iElements = getSelectedElements(api);
@@ -102,19 +133,21 @@ public abstract class GenerateCodeAction implements IPluginActionDelegate {
 
     private String getOutputDirPath(IWindow window, ProjectAccessor projectAccessor)
             throws ProjectNotFoundException {
-        String outputDirPath = new File(projectAccessor.getProjectPath()).getParent();
-        if (outputDirPath == null) {
-            JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            fileChooser.setDialogTitle(Messages.getMessage("title.choose_output_dir"));
-            int selected = fileChooser.showSaveDialog(window.getParent());
-            if (selected != JFileChooser.CANCEL_OPTION) {
-                outputDirPath = fileChooser.getSelectedFile().getAbsolutePath();
-            } else {
-                return null; //canceled
-            }
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        fileChooser.setDialogTitle(Messages.getMessage("title.choose_output_dir"));
+        
+        File projectDir = new File(projectAccessor.getProjectPath()).getParentFile();        
+        if (projectDir != null && projectDir.exists() && projectDir.canWrite()) {
+            fileChooser.setSelectedFile(projectDir);
         }
-        return outputDirPath;
+
+        int selected = fileChooser.showSaveDialog(window.getParent());
+        if (selected != JFileChooser.CANCEL_OPTION) {
+            return fileChooser.getSelectedFile().getAbsolutePath();
+        } else {
+            return null; //canceled
+        }
     }
 
     private IElement[] getSelectedElements(AstahAPI api) throws InvalidUsingException {
@@ -122,6 +155,4 @@ public abstract class GenerateCodeAction implements IPluginActionDelegate {
         IDiagramViewManager iDiagramViewManager = iViewManager.getDiagramViewManager();
         return iDiagramViewManager.getSelectedElements();
     }
-
-    protected abstract void generateCode(AbstractCModule cModule, String outputDirPath) throws IOException;
 }
