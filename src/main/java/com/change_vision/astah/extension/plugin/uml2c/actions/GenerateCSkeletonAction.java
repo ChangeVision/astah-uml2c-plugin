@@ -7,7 +7,8 @@ import com.change_vision.astah.extension.plugin.uml2c.codegenerator.CSkeletonGen
 
 public class GenerateCSkeletonAction extends GenerateCodeAction {
     @Override
-    protected void generateCode(AbstractCModule cModule, String outputDirPath) throws IOException {
+    protected void generateCode(AbstractCModule cModule, String outputDirPath)
+        throws IOException, InterruptedException {
         CSkeletonGenerator cSkeletonGenerator = new CSkeletonGenerator(cModule);
         cSkeletonGenerator.outputHeader(outputDirPath);
         cSkeletonGenerator.outputSource(outputDirPath);

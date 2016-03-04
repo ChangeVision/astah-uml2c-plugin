@@ -10,19 +10,19 @@ public class CSkeletonGenerator {
         this.codeGenerator = new CodeGenerator(cModule);
     }
 
-    public void outputHeader(String dirPath) throws IOException {
+    public void outputHeader(String dirPath) throws IOException, InterruptedException {
         String codePath = dirPath + "/" + codeGenerator.getCModuleName() + ".h";
         String templatePath = codeGenerator.getTemplateDirPath() + "header.vm";
         codeGenerator.outputCode(codePath, templatePath);
     }
 
-    public void outputPrivateHeader(String dirPath) throws IOException {
+    public void outputPrivateHeader(String dirPath) throws IOException, InterruptedException {
         String codePath = dirPath + "/" + codeGenerator.getCModuleName() + "Private.h";
         String templatePath = codeGenerator.getTemplateDirPath() + "private-header.vm";
         codeGenerator.outputCode(codePath, templatePath);
     }
 
-    public void outputSource(String dirPath) throws IOException {
+    public void outputSource(String dirPath) throws IOException, InterruptedException {
         String codePath = dirPath + "/" + codeGenerator.getCModuleName() + ".c";
         String templatePath = codeGenerator.getTemplateDirPath() + "source.vm";
         codeGenerator.outputCode(codePath, templatePath);

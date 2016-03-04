@@ -7,7 +7,7 @@ import com.change_vision.astah.extension.plugin.uml2c.codegenerator.GoogleMockGe
 
 public class GenerateGoogleMockAction extends GenerateCodeAction {
     @Override
-    protected void generateCode(AbstractCModule cModule, String outputDirPath) throws IOException {
+    protected void generateCode(AbstractCModule cModule, String outputDirPath) throws IOException, InterruptedException {
         GoogleMockGenerator googleMockGenerator = new GoogleMockGenerator(cModule);
         googleMockGenerator.outputHeader(outputDirPath);
         googleMockGenerator.outputSource(outputDirPath);

@@ -6,7 +6,7 @@ GoogleMockのコード出力機能も持ちます。
 
 変換ルールなどについては、次のWEBサイトを参照ください。
 
- - [組込みソフト開発 ノウハウ集](http://y-philly.bitbucket.org/embedded-know-how/index.html)
+ - [組込みソフトウェア開発 ノウハウ集](http://y-philly.bitbucket.org/embedded-know-how/index.html)
 
 
 ## 1. インストール方法
@@ -51,6 +51,17 @@ Abstractなクラスを、型による動的インターフェイスとしてコ
 
 ## 3. テンプレートファイルについて
 - テンプレートファイルの文字コードは、UTF-8 としてください。
+
+## 4. オプション
+
+本プラグインは、 コードフォーマッタ [Uncrustify](http://uncrustify.sourceforge.net/http://uncrustify.sourceforge.net/)
+と連携して、生成コードを任意（プロジェクトごとのコーディングルールなど）の書式に整形することができます。
+
+一度以下の手順を行えば、その後は生成コードに対する整形が自動で行われます。
+
+1. Uncrustify のコンフィグファイルを作成し、 `custom.cfg` という名前で保存します。
+1. フォルダ `[ホームフォルダ]/.astah/[astahのエディション名]/plugins/uml2c/uncrustify` を作成します。
+1. 上記フォルダに Uncrustify の実行ファイルと、`custom.cfg` を保存します。
 
 ## ライセンス
 Copyright 2016 ChangeVision,Inc.
