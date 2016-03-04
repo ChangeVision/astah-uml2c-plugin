@@ -15,6 +15,10 @@ GoogleMockのコード出力機能も持ちます。
 コピーしてください。
 - テンプレートファイルは、次のパスになるように配置してください。
    - `[ホームフォルダ]/.astah/[astahのエディション名]/plugins/uml2c/header.vm`
+      - Windowsの場合
+        - `%USERPROFILE%\.astah\[astahのエディション名]\plugins\uml2c\header.vm`
+      - Mac,Linuxの場合
+        - `$HOME/.astah/[astahのエディション名]/plugins/uml2c/header.vm`
 
 ## 2. 使い方
 
