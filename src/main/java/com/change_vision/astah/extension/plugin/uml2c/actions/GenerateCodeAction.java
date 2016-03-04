@@ -95,7 +95,8 @@ public abstract class GenerateCodeAction implements IPluginActionDelegate {
         return null;
     }
 
-    protected abstract void generateCode(AbstractCModule cModule, String outputDirPath) throws IOException;
+    protected abstract void generateCode(AbstractCModule cModule, String outputDirPath)
+        throws IOException, InterruptedException;
 
     private boolean ensureWritableOutputFolder(String outputDirPath, IWindow window) {
         File outputDir = new File(outputDirPath);
