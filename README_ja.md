@@ -6,7 +6,7 @@ GoogleMockのコード出力機能も持ちます。
 
 変換ルールなどについては、次のWEBサイトを参照ください。
 
- - [組込みソフト開発 ノウハウ集](http://y-philly.bitbucket.org/embedded-know-how/index.html)
+ - [組込みソフト開発 ノウハウ集](https://y-philly.bitbucket.io/embedded-know-how/index.html)
 
 
 ## 1. インストール方法
